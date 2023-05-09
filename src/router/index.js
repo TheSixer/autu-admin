@@ -10,6 +10,7 @@ import Layout from '@/layout'
 import componentsRouter from './modules/components'
 import chartsRouter from './modules/charts'
 import tableRouter from './modules/table'
+import auditsRouter from './modules/audits'
 import nestedRouter from './modules/nested'
 
 /**
@@ -121,7 +122,47 @@ export const constantRoutes = [
         meta: { title: 'Profile', icon: 'user', noCache: true }
       }
     ]
-  }
+  },
+
+  {
+    path: '/rate',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/rate/index'),
+        name: 'consult',
+        meta: { title: '汇率管理', icon: 'guide', noCache: true }
+      }
+    ]
+  },
+
+  {
+    path: '/consult',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/consult/index'),
+        name: 'consult',
+        meta: { title: '咨询管理', icon: 'icon', noCache: true }
+      }
+    ]
+  },
+
+  // {
+  //   path: '/audits',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/audits/index'),
+  //       name: 'audits',
+  //       meta: { title: '审核管理', icon: 'list', noCache: true }
+  //     }
+  //   ]
+  // },
+  auditsRouter
 ]
 
 /**

@@ -1,6 +1,41 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+const { deepClone } = require('@/utils')
 import router, { resetRouter } from '@/router'
+const { asyncRoutes, constantRoutes } = require('@/role/routes.js')
+
+const routes = deepClone([...constantRoutes, ...asyncRoutes])
+
+const roles = [
+  {
+    key: 'admin',
+    name: 'admin',
+    description: 'Super Administrator. Have access to view all pages.',
+    routes: routes
+  },
+  {
+    key: 'editor',
+    name: 'editor',
+    description: 'Normal Editor. Can see all pages except permission page',
+    routes: routes.filter(i => i.path !== '/permission')// just a mock
+  },
+  {
+    key: 'visitor',
+    name: 'visitor',
+    description: 'Just a visitor. Can only see the home page and the document page',
+    routes: [{
+      path: '',
+      redirect: 'dashboard',
+      children: [
+        {
+          path: 'dashboard',
+          name: 'Dashboard',
+          meta: { title: 'dashboard', icon: 'dashboard' }
+        }
+      ]
+    }]
+  }
+]
 
 const state = {
   token: getToken(),
@@ -33,10 +68,11 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ userName: username.trim(), password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        console.log(data)
+        commit('SET_TOKEN', data)
+        setToken(data)
         resolve()
       }).catch(error => {
         reject(error)
@@ -54,7 +90,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { userName, baseInfo } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -62,10 +98,10 @@ const actions = {
         }
 
         commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
+        commit('SET_NAME', userName)
+        commit('SET_AVATAR', '')
+        commit('SET_INTRODUCTION', baseInfo)
+        resolve({ ...data, roles })
       }).catch(error => {
         reject(error)
       })
@@ -74,22 +110,14 @@ const actions = {
 
   // user logout
   logout({ commit, state, dispatch }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        removeToken()
-        resetRouter()
+    commit('SET_TOKEN', '')
+    commit('SET_ROLES', [])
+    removeToken()
+    resetRouter()
 
-        // reset visited views and cached views
-        // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-        dispatch('tagsView/delAllViews', null, { root: true })
-
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+    // reset visited views and cached views
+    // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
+    dispatch('tagsView/delAllViews', null, { root: true })
   },
 
   // remove token
