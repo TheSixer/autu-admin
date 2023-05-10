@@ -22,7 +22,13 @@ const auditsRouter = {
       path: 'recharge',
       component: () => import('@/views/recharge/index'),
       name: 'DynamicTable',
-      meta: { title: '充值记录' }
+      meta: { title: '充值申请' }
+    },
+    {
+      path: 'withdraw',
+      component: () => import('@/views/withdraw/index'),
+      name: 'DynamicTable',
+      meta: { title: '提现申请' }
     }
   ]
 }

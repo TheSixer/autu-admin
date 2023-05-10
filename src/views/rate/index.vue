@@ -47,7 +47,7 @@
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row.id)">
+          <el-button v-if="row.status != 'deleted'" :disabled="row.currency === 'USD'" size="mini" type="danger" @click="handleDelete(row.id)">
             删除
           </el-button>
         </template>

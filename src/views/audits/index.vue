@@ -42,12 +42,17 @@
         </template>
       </el-table-column>
 
-      <el-table-column class-name="status-col" label="查看图片">
+      <el-table-column class-name="status-col" label="查看图片" width="240">
         <template slot-scope="{row}">
           <el-image
+            style="width: 100px; height: 80px; margin-right: 10px;"
+            :src="row.frontPhotoUrl"
+            :preview-src-list="[row.frontPhotoUrl, row.frontPhotoUrl]"
+          />
+          <el-image
             style="width: 100px; height: 80px"
-            :src="row.photoUrl"
-            :preview-src-list="[row.photoUrl]"
+            :src="row.backendPhotoUrl"
+            :preview-src-list="[row.frontPhotoUrl, row.backendPhotoUrl]"
           />
         </template>
       </el-table-column>
@@ -155,6 +160,7 @@ export default {
           type: 'success',
           message: '审核完成!'
         })
+        this.handleFilter()
       }
     },
     async confirmRefuse(id) {
@@ -164,6 +170,7 @@ export default {
           type: 'success',
           message: '已拒绝!'
         })
+        this.handleFilter()
       }
     },
     handlePass(id) {
