@@ -38,20 +38,25 @@
           <span>{{ row.thirdOrderCode }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="真实姓名" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.realName }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="充值金额（RMB）" align="center">
         <template slot-scope="{row}">
-          <span>¥ {{ row.amount / 100 }}</span>
+          <span>¥ {{ row.type === 'thirdPay' ? (row.amount / 100) : '-' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="充值金额（USD）" align="center">
         <template slot-scope="{row}">
-          <span>$ {{ usdRate ? (Math.floor(row.amount / usdRate.rate) / 100) : '-' }}</span>
+          <span>$ {{ row.type !== 'thirdPay' ? (row.amount / 100) : usdRate ? (Math.floor(row.amount / usdRate.rate) / 100) : '-' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="支付状态" width="110px" align="center">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
-            {{ row.status === 'paying' ? '支付中' : row.status === 'success' ? '审核通过' : '已拒绝' }}
+            {{ row.status === 'paying' ? '待审核' : row.status === 'success' ? '审核通过' : '已拒绝' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -67,7 +72,7 @@
       </el-table-column>
       <el-table-column label="支付方式" width="110px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.channel === '1012' ? '1012' : '' }}</span>
+          <span>{{ row.type === 'thirdPay' ? '第三方支付' : row.type === 'digitalCurrency' ? '数字货币' : '国际电汇' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">

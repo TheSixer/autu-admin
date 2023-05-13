@@ -42,7 +42,7 @@ module.exports = {
         ws: false, // 是否启用websockets
         changeOrigin: true, // 是否跨域
         pathRewrite: { // 重写匹配的字段，如果不需要放在请求路径上，可以重写为""
-          '^/api': '/api'
+          '^/api': '/autu-api'
         }
       }
     }
