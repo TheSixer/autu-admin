@@ -192,8 +192,8 @@ export default {
         type: ''
       }
     },
-    async confirmPass(id) {
-      const { code } = await confirmAudit({ id })
+    async confirmPass(params) {
+      const { code } = await confirmAudit(params)
       if (!code) {
         this.$message({
           type: 'success',
@@ -220,11 +220,24 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.confirmPass(id)
+        this.handleOrder(id)
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消操作'
+        })
+      })
+    },
+    handleOrder(id) {
+      this.$prompt('请输入第三方转账订单号', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({ value }) => {
+        this.confirmPass({ id, thirdOrderCode: value })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
         })
       })
     },

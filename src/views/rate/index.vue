@@ -6,8 +6,8 @@
       <el-select v-model="rate.currencyCode" placeholder="选择货币" clearable style="width: 120px;" class="filter-item">
         <el-option v-for="item in rateCode" :key="item" :label="item" :value="item" />
       </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="saveRate">
-        新增
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-edit" :disabled="!rate.rate" @click="saveRate">
+        新增/修改
       </el-button>
     </div>
 
